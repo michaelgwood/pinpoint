@@ -38,6 +38,8 @@
 #include <dax/dax.h>
 #include "pp-super-aa.h"
 #endif
+#include "pp-dbusinput.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -164,6 +166,7 @@ typedef struct _ClutterRenderer
   guint32           inhibit_cookie;
 
   PPClutterBackend  clutter_backend;
+  DbusInput        *dbus_input;
 } ClutterRenderer;
 
 typedef struct
@@ -1037,6 +1040,8 @@ clutter_renderer_init (PinPointRenderer   *pp_renderer,
                                              NULL);
       g_clear_object (&session_bus);
     }
+
+  renderer->dbus_input = pp_dbusinput_new (stage);
 }
 
 static gboolean update_speaker_screen (ClutterRenderer *renderer);
@@ -1060,6 +1065,7 @@ clutter_renderer_finalize (PinPointRenderer *pp_renderer)
 {
   ClutterRenderer *renderer = CLUTTER_RENDERER (pp_renderer);
 
+  pp_dbusinput_free (renderer->dbus_input);
   clutter_actor_destroy (renderer->stage);
   g_hash_table_unref (renderer->bg_cache);
   g_clear_object (&renderer->gsm);

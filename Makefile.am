@@ -16,6 +16,8 @@ pinpoint_SOURCES = \
   pp-clutter.c \
   gst-video-thumbnailer.h \
   gst-video-thumbnailer.c \
+  pp-dbusinput.c \
+  pp-dbusinput.h \
   $(DAX_SOURCES)
 
 EXTRA_DIST=introduction.pin bowls.jpg bg.jpg linus.jpg pp-super-aa.c pp-super-aa.h
