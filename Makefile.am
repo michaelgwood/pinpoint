@@ -1,4 +1,9 @@
 SUBDIRS=transitions
+
+if HAVE_WEBSERVICE
+SUBDIRS += webservice
+endif
+
 bin_PROGRAMS=pinpoint
 
 AM_CFLAGS = $(DEPS_CFLAGS) $(MAINTAINER_CFLAGS) -D_GNU_SOURCE -DPKGDATADIR=\"$(pkgdatadir)/\" -DPINPOINT_SRCDIR=\"$(abs_top_srcdir)\"

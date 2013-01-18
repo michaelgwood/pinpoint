@@ -41,6 +41,29 @@ AS_IF([test "x$have_pdf" = "xyes"], [
        AC_DEFINE([HAVE_PDF], [1], [Whether pinpoint will generate PDFs])])
 AM_CONDITIONAL([HAVE_PDF], [test "x$have_pdf" = "xyes"])
 
+# Webservice
+AC_ARG_ENABLE([webservice],
+	      [AS_HELP_STRING([--enable-webservice=@<:no/auto/yes:>@],
+			      [Control pinpoint over the web])],,
+			      [enable_webservice=auto])
+AC_MSG_CHECKING([for the stuff needed to run the webservice])
+AS_CASE([$enable_webservice],
+	[no], [have_webservice="no (disabled)"],
+	[yes], [PKG_CHECK_EXISTS([libsoup-2.4 gio-2.0],
+                                 have_webservice="yes",
+                                 AC_MSG_ERROR([Oh no!]))],
+	[auto], [PKG_CHECK_EXISTS([libsoup-2.4],
+				  have_webservice="yes",
+				  have_webservice="no")],
+	AC_MSG_ERROR([invalid argumented passed to --enable-webservice]))
+AC_MSG_RESULT([$have_webservice])
+AS_IF([test "x$have_webservice" = "xyes"], [
+       PINPOINT_DEPS="$PINPOINT_DEPS libsoup-2.4"
+       AC_DEFINE([HAVE_WEBSERVICE], [1], [Whether pinpoint will use webservice])])
+AM_CONDITIONAL([HAVE_WEBSERVICE], [test "x$have_webservice" = "xyes"])
+
+
+
 # ClutterGst support
 AC_ARG_ENABLE([cluttergst],
 	      [AS_HELP_STRING([--enable-cluttergst=@<:no/auto/yes:>@],
@@ -109,6 +132,7 @@ PKG_CHECK_MODULES([DEPS], [$PINPOINT_DEPS])
 AC_OUTPUT([
 	Makefile
         transitions/Makefile
+        webservice/Makefile
 ])
 
 echo ""
@@ -130,5 +154,9 @@ echo ""
 echo " • Renderers"
 echo "       Clutter: yes (built-in)"
 echo "       PDF    : $have_pdf"
+
+echo ""
+echo " • Other"
+echo "       Webservice: ${have_webservice}"
 
 echo ""
